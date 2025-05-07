@@ -5,7 +5,6 @@ import '../models/post.dart';
 class ApiService {
   static const String url = "https://jsonplaceholder.typicode.com/posts";
 
-  // READ
   static Future<List<Post>> fetchPosts() async {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -16,47 +15,36 @@ class ApiService {
     }
   }
 
-  // CREATE
-  static Future<Post> createPost(Post post) async {
+  static Future<Post> addPost(Post post) async {
     final response = await http.post(
       Uri.parse(url),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'title': post.title, 'body': post.body, 'userId': 1}),
+      body: json.encode(post.toJson()),
+      headers: {"Content-Type": "application/json"},
     );
-
     if (response.statusCode == 201) {
       return Post.fromJson(json.decode(response.body));
     } else {
-      throw Exception('Échec de la création du post');
+      throw Exception('Erreur lors de l\'ajout du post');
     }
   }
 
-  // UPDATE
+  static Future<void> deletePost(int id) async {
+    final response = await http.delete(Uri.parse('$url/$id'));
+    if (response.statusCode != 200) {
+      throw Exception('Erreur lors de la suppression du post');
+    }
+  }
+
   static Future<Post> updatePost(Post post) async {
     final response = await http.put(
       Uri.parse('$url/${post.id}'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'id': post.id,
-        'title': post.title,
-        'body': post.body,
-        'userId': 1,
-      }),
+      body: json.encode(post.toJson()),
+      headers: {"Content-Type": "application/json"},
     );
-
     if (response.statusCode == 200) {
       return Post.fromJson(json.decode(response.body));
     } else {
-      throw Exception('Échec de la mise à jour du post');
-    }
-  }
-
-  // DELETE
-  static Future<void> deletePost(int id) async {
-    final response = await http.delete(Uri.parse('$url/$id'));
-
-    if (response.statusCode != 200) {
-      throw Exception('Échec de la suppression du post');
+      throw Exception('Erreur lors de la mise à jour du post');
     }
   }
 }

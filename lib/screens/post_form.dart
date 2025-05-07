@@ -32,7 +32,7 @@ class _PostFormPageState extends State<PostFormPage> {
 
       try {
         if (widget.post == null) {
-          await ApiService.createPost(newPost);
+          await ApiService.addPost(newPost); // Corrected method name
         } else {
           await ApiService.updatePost(newPost);
         }
@@ -61,14 +61,14 @@ class _PostFormPageState extends State<PostFormPage> {
               TextFormField(
                 controller: _titleController,
                 decoration: const InputDecoration(labelText: 'Titre'),
-                validator:
-                    (value) => value == null || value.isEmpty ? 'Requis' : null,
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Requis' : null,
               ),
               TextFormField(
                 controller: _bodyController,
                 decoration: const InputDecoration(labelText: 'Contenu'),
-                validator:
-                    (value) => value == null || value.isEmpty ? 'Requis' : null,
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Requis' : null,
               ),
               const SizedBox(height: 20),
               ElevatedButton(
